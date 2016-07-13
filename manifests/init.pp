@@ -146,9 +146,20 @@ class ipa (
   }
 
   if $ipa::sssd {
+    @package { 'sssd-common':
+      ensure => installed
+    }
+
     @service { 'sssd':
-      ensure => 'running',
-      enable => true
+      ensure  => 'running',
+      enable  => true,
+      require => Package['sssd-common']
+    }
+  }
+
+  if $ipa::dns {
+    @package { 'bind-dyndb-ldap':
+      ensure => installed
     }
   }
 
@@ -277,6 +288,7 @@ class ipa (
       sssdtools    => $ipa::sssdtools,
       sssdtoolspkg => $ipa::sssdtoolspkg,
       sssd         => $ipa::sssd,
+      kstart       => $ipa::kstart,
       loadbalance  => $ipa::loadbalance,
       ipaservers   => $ipa::ipaservers,
       mkhomedir    => $ipa::mkhomedir,

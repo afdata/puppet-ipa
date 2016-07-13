@@ -83,6 +83,7 @@ class ipa::master (
   realize Package[$ipa::master::svrpkg]
 
   if $ipa::master::sssd {
+    realize Package['sssd-common']
     realize Service['sssd']
   }
 
@@ -98,6 +99,7 @@ class ipa::master (
       $forwarderopts = '--no-forwarders'
     }
     $dnsopt = '--setup-dns'
+    realize Package['bind-dyndb-ldap']
   }
   else {
     $dnsopt = ''
@@ -114,9 +116,11 @@ class ipa::master (
     default => ''
   }
 
-  $idstartopt = $idstart ? {
-    false   => '',
-    default => "--idstart=$idstart"
+  $random_idstart = fqdn_rand('10737') + 10000
+
+  $generated_idstart = $idstart ? {
+    false => $random_idstart,
+    default => $idstart,
   }
 
   ipa::serverinstall { $::fqdn:
@@ -128,7 +132,7 @@ class ipa::master (
     forwarderopts => $ipa::master::forwarderopts,
     ntpopt        => $ipa::master::ntpopt,
     extcaopt      => $ipa::master::extcaopt,
-    idstartopt    => $ipa::master::idstartopt,
+    idstart       => $ipa::master::generated_idstart,
     require       => Package[$ipa::master::svrpkg]
   }
 
