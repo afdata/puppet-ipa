@@ -20,12 +20,13 @@ define ipa::adminconfig (
     require    => File[$adminhomedir]
   }
 
-  $kadminlocalcmd = shellquote('/usr/sbin/kadmin.local','-q',"ktadd -norandkey -k ${adminhomedir}/admin.keytab admin")
-  $chownkeytabcmd = shellquote('/usr/bin/chown',"${adminuidnumber}:${adminuidnumber}","${adminhomedir}/admin.keytab")
-  $k5startcmd = shellquote('/sbin/runuser','-l','admin','-c',"/usr/bin/k5start -f ${adminhomedir}/admin.keytab -U")
+  $kadminlocalcmd = shellquote('kadmin.local','-q',"ktadd -norandkey -k ${adminhomedir}/admin.keytab admin")
+  $chownkeytabcmd = shellquote('chown',"${adminuidnumber}:${adminuidnumber}","${adminhomedir}/admin.keytab")
+  $k5startcmd = shellquote('runuser','-l','admin','-c',"/usr/bin/k5start -f ${adminhomedir}/admin.keytab -U")
 
   exec { 'admin_keytab':
     command => "${kadminlocalcmd} && ${chownkeytabcmd} && ${k5startcmd} > /dev/null 2>&1",
+    path    => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
     cwd     => $adminhomedir,
     unless  => shellquote('/usr/bin/kvno','-k',"${adminhomedir}/admin.keytab","admin@${realm}"),
     notify  => File["${adminhomedir}/admin.keytab"],
