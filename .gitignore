@@ -4,3 +4,5 @@
 *~
 pkg
 spec/fixtures/
+.bundle
+Gemfile.lock

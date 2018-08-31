@@ -1,4 +1,4 @@
-# :warning: [DEPRECATED] :warning: IPA Puppet module
+# [DEPRECATED - YET - Work in progress] IPA Puppet module
 [![Build Status](https://travis-ci.org/huit/puppet-ipa.png?branch=master)](https://travis-ci.org/huit/puppet-ipa)
 
 ## Overview

@@ -17,25 +17,27 @@ define ipa::clientinstall (
 
   $mkhomediropt = $mkhomedir ? {
     true    => '--mkhomedir',
-    default => ''
+    default => undef
   }
 
   $ntpopt = $ntp ? {
-    true    => '',
+    true    => undef,
     default => '--no-ntp'
   }
 
   $fixedprimaryopt = $fixedprimary ? {
     true    => '--fixed-primary',
-    default => ''
+    default => undef
   }
 
-  $clientinstallcmd = shellquote('/usr/sbin/ipa-client-install',"--server=${masterfqdn}","--hostname=${host}","--domain=${domain}","--realm=${realm}","--password=${otp}",$mkhomediropt,$ntpopt,$fixedprimaryopt,'--unattended')
+  $extravars = "${mkhomediropt} ${ntpopt} ${fixedprimaryopt}"
+
+  $clientinstallcmd = shellquote('/usr/sbin/ipa-client-install',"--server=${masterfqdn}","--hostname=${host}","--domain=${domain}","--realm=${realm}","--password=${otp}")
   $dc = prefix([regsubst($domain,'(\.)',',dc=','G')],'dc=')
   $searchostldapcmd = shellquote('/usr/bin/k5start','-u',"host/${host}",'-f','/etc/krb5.keytab','--','/usr/bin/ldapsearch','-Y','GSSAPI','-H',"ldap://${masterfqdn}",'-b',$dc,"fqdn=${host}")
 
   exec { "client-install-${host}":
-    command   => "/bin/echo | ${clientinstallcmd}",
+    command   => "/bin/echo | ${clientinstallcmd} ${extravars} --unattended",
     unless    => "${searchostldapcmd} | /bin/grep ^krbLastPwdChange",
     timeout   => '0',
     tries     => '60',

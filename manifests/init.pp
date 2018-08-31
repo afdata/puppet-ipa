@@ -273,12 +273,12 @@ class ipa (
 
   if $ipa::replica {
     class { 'ipa::replica':
-      svrpkg      => $ipa::svrpkg,
-      domain      => downcase($ipa::domain),
-      adminpw     => $ipa::adminpw,
-      dspw        => $ipa::dspw,
-      kstart      => $ipa::kstart,
-      sssd        => $ipa::sssd
+      svrpkg  => $ipa::svrpkg,
+      domain  => downcase($ipa::domain),
+      adminpw => $ipa::adminpw,
+      dspw    => $ipa::dspw,
+      kstart  => $ipa::kstart,
+      sssd    => $ipa::sssd
     }
 
     class { 'ipa::client':

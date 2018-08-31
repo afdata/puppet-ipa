@@ -46,7 +46,7 @@ class ipa::master_extca (
         owner  => 'root',
         group  => 'root',
         mode   => '0600',
-        source => "puppet:///files/ipa/${dirsrv_pkcs12}"
+        source => "puppet:///modules/ipa/${dirsrv_pkcs12}"
       }
     } else {
       $dirsrv_pkcs12opt = ''
@@ -61,7 +61,7 @@ class ipa::master_extca (
         owner  => 'root',
         group  => 'root',
         mode   => '0600',
-        source => "puppet:///files/ipa/${http_pkcs12}"
+        source => "puppet:///modules/ipa/${http_pkcs12}"
       }
     } else {
       $http_pkcs12opt = ''
