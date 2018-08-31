@@ -1,5 +1,5 @@
 name    'huit-ipa'
-version '1.5.5'
+version '1.5.6'
 source 'Harvard University Information Technology'
 author 'huit'
 license 'Apache License, Version 2.0'
