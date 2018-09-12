@@ -10,6 +10,7 @@ define ipa::clientinstall (
   $otp          = {},
   $mkhomedir    = {},
   $ntp          = {},
+  $principal    = undef,
   $fixedprimary = false
 ) {
 
@@ -30,7 +31,13 @@ define ipa::clientinstall (
     default => undef
   }
 
-  $extravars = "${mkhomediropt} ${ntpopt} ${fixedprimaryopt}"
+  if !$principal {
+    $principal_user = "--principal=admin@${realm}"
+  } else {
+    $principal_user = "--principal=${principal}"
+  }
+
+  $extravars = "${mkhomediropt} ${ntpopt} ${fixedprimaryopt} ${principal_user}"
 
   $clientinstallcmd = shellquote('/usr/sbin/ipa-client-install',"--server=${masterfqdn}","--hostname=${host}","--domain=${domain}","--realm=${realm}","--password=${otp}")
   $dc = prefix([regsubst($domain,'(\.)',',dc=','G')],'dc=')
